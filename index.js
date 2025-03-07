@@ -13,7 +13,7 @@ const categoryRoutes = require("./routes/category");
 const productsRoutes = require("./routes/products");
 const cartRoutes = require("./routes/cart");
 const orderRoutes = require("./routes/order");
-
+    
 // middlewares
 app.use(cors());
 app.use(bodyParser.json());
