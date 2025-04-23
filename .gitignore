@@ -3,7 +3,7 @@ node_modules/
 npm-debug.log
 
 # Express.js
-.env
+# .env
 
 # Mongoose
 *.log
