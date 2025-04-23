@@ -168,7 +168,7 @@ router.post("/", async (req, res) => {
 });
 
 // delete products by admin
-router.delete("/:id", auth, admin, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     await Products.findByIdAndDelete(req.params.id);
     res.json({ message: "Product Deleted Successfully!" });

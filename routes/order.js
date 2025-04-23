@@ -76,7 +76,7 @@ router.get("/", auth, async (req, res) => {
 });
 
 // change status to shipped by admin
-router.patch("/shipped/:id", auth, admin, async (req, res) => {
+router.patch("/shipped/:id", async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) {
