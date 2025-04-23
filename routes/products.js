@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const Products = require("../models/products");
 const Category = require("../models/category");
@@ -119,13 +122,30 @@ router.get("/", async (req, res) => {
   }
 });
 
-// post products
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "upload"); // Ensure this folder exists!
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const filename = file.fieldname + "-" + Date.now() + ext;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({ storage });
+
 router.post("/", async (req, res) => {
   try {
+    const form = formidable({
+      multiples: false,
+      uploadDir: "./upload",
+      keepExtensions: true,
+    });
     const newProduct = new Products({
       title: req.body.title,
       description: req.body.description,
-      images: req.body.images,
+      images: req.file ? [req.file.filename] : [], // FIXED LINE
       price: req.body.price,
       stock: req.body.stock,
       category: req.body.category,
@@ -133,9 +153,16 @@ router.post("/", async (req, res) => {
     });
 
     await newProduct.save();
+
+    form.parse(req, (err, fields, files) => {
+      if (err) return res.status(500).json({ error: err.message });
+      console.log("Fields:", fields);
+      console.log("Files:", files);
+    });
+
     res.status(201).json(newProduct);
   } catch (err) {
-    console.error(error);
+    console.error(err);
     res.status(500).json({ message: "Server Error" });
   }
 });

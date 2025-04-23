@@ -21,6 +21,16 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.find();
+    return res.send(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Setting up multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -124,7 +134,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: 3600 },
       (err, token) => {
         if (err) throw err;
-        return res.json({ token });
+        return res.json({ token: token, isAdmin: newUser.isAdmin });
       }
     );
   } catch (err) {
